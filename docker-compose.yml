@@ -1,0 +1,127 @@
+services:
+  # ============================================================================
+  # PostgreSQL Database
+  # ============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: vivero_postgres
+
+    environment:
+      POSTGRES_USER: ${DB_USER:-vivero}
+      POSTGRES_PASSWORD: ${DB_PASS:-password123}
+      POSTGRES_DB: ${DB_NAME:-vivero_online}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-vivero}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - vivero_network
+
+    restart: unless-stopped
+
+  # ============================================================================
+  # NestJS Backend
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: vivero_backend
+
+    environment:
+      # Database - variables individuales (como espera app.module.ts)
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-vivero}
+      DB_PASS: ${DB_PASS:-password123}
+      DB_NAME: ${DB_NAME:-vivero_online}
+
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-default-secret-key-change-me}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-7200}
+
+      # Application
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Hot reload en desarrollo
+    volumes:
+      - ./backend/src:/app/src
+      - /app/node_modules
+
+    networks:
+      - vivero_network
+
+    restart: unless-stopped
+
+  # ============================================================================
+  # Angular Frontend
+  # ============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: vivero_frontend
+
+    ports:
+      - "80:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - vivero_network
+
+    restart: unless-stopped
+
+  # ============================================================================
+  # Redis (OPCIONAL - Descomentar para usar caché)
+  # ============================================================================
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: vivero_redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - vivero_network
+  #   command: redis-server --appendonly yes
+  #   restart: unless-stopped
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  vivero_network:
+    driver: bridge
+
+# ============================================================================
+# Volumes (Persistencia de datos)
+# ============================================================================
+volumes:
+  postgres_data:
+    driver: local
+
+  # redis_data:
+  #   driver: local

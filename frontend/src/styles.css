@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-white text-earth-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-earth-900;
+  }
+
+  a {
+    @apply text-plant-600 hover:text-plant-700 transition-colors;
+  }
+
+  button {
+    @apply transition-all duration-200;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors;
+  }
+
+  .btn-primary {
+    @apply btn bg-plant-600 text-white hover:bg-plant-700 active:bg-plant-800;
+  }
+
+  .btn-secondary {
+    @apply btn bg-leaf-100 text-leaf-700 hover:bg-leaf-200 active:bg-leaf-300;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-plant-600 text-plant-600 hover:bg-plant-50 active:bg-plant-100;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-lg;
+  }
+
+  .card {
+    @apply bg-white rounded-lg border border-stone-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden;
+  }
+
+  .card-border {
+    @apply border-l-4 border-l-plant-600;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-plant-500 focus:border-transparent;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-earth-900 mb-1;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+
+  .container {
+    @apply mx-auto px-4 max-w-7xl;
+  }
+
+  .section {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  .badge {
+    @apply inline-block px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-success {
+    @apply bg-plant-100 text-plant-700;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+
+  .badge-danger {
+    @apply bg-red-100 text-red-700;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-stone-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-plant-400 rounded-full hover:bg-plant-600;
+}

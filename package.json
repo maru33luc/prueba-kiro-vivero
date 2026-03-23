@@ -1,0 +1,21 @@
+{
+  "name": "vivero-online",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start:backend": "npm run start --workspace=backend",
+    "start:frontend": "npm run start --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "test:backend": "npm run test --workspace=backend",
+    "test:frontend": "npm run test --workspace=frontend",
+    "test:e2e": "npm run cypress:run --workspace=frontend",
+    "migration:generate": "npm run migration:generate --workspace=backend",
+    "migration:run": "npm run migration:run --workspace=backend",
+    "validate:frontend-practices": "node scripts/validate-frontend-practices.js"
+  }
+}
