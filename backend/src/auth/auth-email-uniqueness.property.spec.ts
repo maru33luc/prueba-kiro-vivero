@@ -16,6 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User, UserRole } from '../users/user.entity';
+import { MailService } from '../mail/mail.service';
 
 // Use bcrypt with 1 round to keep property tests fast
 jest.mock('bcrypt', () => {
@@ -84,6 +85,10 @@ describe('AuthService — Property 6: Unicidad de email en registro', () => {
           useValue: {
             get: jest.fn().mockImplementation((_key: string, def?: string) => def ?? ''),
           },
+        },
+        {
+          provide: MailService,
+          useValue: { sendPasswordResetEmail: jest.fn() },
         },
       ],
     }).compile();

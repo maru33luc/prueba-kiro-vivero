@@ -17,6 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User, UserRole } from '../users/user.entity';
+import { MailService } from '../mail/mail.service';
 
 // Use real bcrypt with 1 round for speed while still validating real hash behaviour
 jest.mock('bcrypt', () => {
@@ -76,6 +77,10 @@ describe('AuthService — Property 19: Contraseñas almacenadas como hash bcrypt
           useValue: {
             get: jest.fn().mockImplementation((_key: string, def?: string) => def ?? ''),
           },
+        },
+        {
+          provide: MailService,
+          useValue: { sendPasswordResetEmail: jest.fn() },
         },
       ],
     }).compile();

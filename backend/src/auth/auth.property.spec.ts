@@ -18,6 +18,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User, UserRole } from '../users/user.entity';
+import { MailService } from '../mail/mail.service';
 import { Response } from 'express';
 
 // Use real bcrypt but with 1 round to keep property tests fast
@@ -102,6 +103,10 @@ describe('AuthService — Property 5: Round-trip de autenticación', () => {
           useValue: {
             get: jest.fn().mockImplementation((_key: string, def?: string) => def ?? ''),
           },
+        },
+        {
+          provide: MailService,
+          useValue: { sendPasswordResetEmail: jest.fn() },
         },
       ],
     }).compile();
