@@ -53,6 +53,8 @@ const makeUser = (email: string, passwordHash: string): User => ({
   role: UserRole.USER,
   emailVerified: false,
   createdAt: new Date(),
+  resetPasswordToken: null,
+  resetPasswordExpires: null,
 });
 
 /** Arbitrary: valid email */
