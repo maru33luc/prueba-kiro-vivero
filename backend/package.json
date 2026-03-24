@@ -7,7 +7,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
-    "test": "jest --run",
+    "test": "jest",
     "test:watch": "jest",
     "test:cov": "jest --coverage",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/data-source.ts",
