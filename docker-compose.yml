@@ -7,18 +7,18 @@ services:
     container_name: vivero_postgres
 
     environment:
-      POSTGRES_USER: ${DB_USER:-vivero}
-      POSTGRES_PASSWORD: ${DB_PASS:-password123}
-      POSTGRES_DB: ${DB_NAME:-vivero_online}
+      POSTGRES_USER: ${DB_USER:?DB_USER is required}
+      POSTGRES_PASSWORD: ${DB_PASS:?DB_PASS is required}
+      POSTGRES_DB: ${DB_NAME:?DB_NAME is required}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${DB_PORT_HOST:-5432}:5432"
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-vivero}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:?DB_USER is required}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -42,12 +42,12 @@ services:
       # Database - variables individuales (como espera app.module.ts)
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: ${DB_USER:-vivero}
-      DB_PASS: ${DB_PASS:-password123}
-      DB_NAME: ${DB_NAME:-vivero_online}
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASS: ${DB_PASS:?DB_PASS is required}
+      DB_NAME: ${DB_NAME:?DB_NAME is required}
 
       # JWT
-      JWT_SECRET: ${JWT_SECRET:-default-secret-key-change-me}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-7200}
 
       # Application
