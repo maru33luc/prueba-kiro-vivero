@@ -36,6 +36,8 @@ jest.mock('bcrypt', () => {
 const makeUser = (email: string, passwordHash: string): User => ({
   id: 'uuid-test',
   email,
+  fullName: 'Property User',
+  phone: null as unknown as string,
   passwordHash,
   role: UserRole.USER,
   emailVerified: false,
@@ -109,7 +111,7 @@ describe('AuthService — Property 19: Contraseñas almacenadas como hash bcrypt
             return makeUser(data.email, data.passwordHash!);
           });
 
-          await service.register({ email, password });
+          await service.register({ fullName: 'Property User', email, password });
 
           // The hash must have been captured
           expect(capturedHash).toBeDefined();

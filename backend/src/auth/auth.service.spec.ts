@@ -12,6 +12,8 @@ import { Response } from 'express';
 const mockUser: User = {
   id: 'uuid-1',
   email: 'test@example.com',
+  fullName: 'Test User',
+  phone: null as unknown as string,
   passwordHash: '',
   role: UserRole.USER,
   emailVerified: false,
@@ -77,6 +79,7 @@ describe('AuthService', () => {
       usersService.create.mockResolvedValue({ ...mockUser });
 
       const result = await service.register({
+        fullName: 'New User',
         email: 'new@example.com',
         password: 'password123',
       });
@@ -91,7 +94,11 @@ describe('AuthService', () => {
       usersService.findByEmail.mockResolvedValue(mockUser);
 
       await expect(
-        service.register({ email: 'test@example.com', password: 'password123' }),
+        service.register({
+          fullName: 'Existing User',
+          email: 'test@example.com',
+          password: 'password123',
+        }),
       ).rejects.toThrow(ConflictException);
     });
 
@@ -103,7 +110,7 @@ describe('AuthService', () => {
       }));
 
       const password = 'mySecret123';
-      await service.register({ email: 'new@example.com', password });
+      await service.register({ fullName: 'Hash User', email: 'new@example.com', password });
 
       const callArg = usersService.create.mock.calls[0][0];
       expect(callArg.passwordHash).not.toBe(password);

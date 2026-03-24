@@ -50,6 +50,8 @@ const mockRes = (): Response => {
 const makeUser = (email: string, passwordHash: string): User => ({
   id: 'uuid-test',
   email,
+  fullName: 'Roundtrip User',
+  phone: null as unknown as string,
   passwordHash,
   role: UserRole.USER,
   emailVerified: false,
@@ -140,7 +142,11 @@ describe('AuthService — Property 5: Round-trip de autenticación', () => {
           });
 
           // Register
-          const registerResult = await service.register({ email, password });
+          const registerResult = await service.register({
+            fullName: 'Roundtrip User',
+            email,
+            password,
+          });
           expect(registerResult.message).toBeDefined();
 
           // Login with same credentials

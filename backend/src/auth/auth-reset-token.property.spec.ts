@@ -28,6 +28,8 @@ const SIXTY_MINUTES_MS = 60 * 60 * 1000;
 const makeUser = (overrides: Partial<User> = {}): User => ({
   id: 'uuid-test',
   email: 'user@example.com',
+  fullName: 'Reset User',
+  phone: null as unknown as string,
   passwordHash: 'hash',
   role: UserRole.USER,
   emailVerified: false,

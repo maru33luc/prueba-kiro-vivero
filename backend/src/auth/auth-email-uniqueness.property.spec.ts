@@ -35,6 +35,8 @@ jest.mock('bcrypt', () => {
 const makeUser = (email: string, passwordHash: string): User => ({
   id: 'uuid-test',
   email,
+  fullName: 'Unique User',
+  phone: null as unknown as string,
   passwordHash,
   role: UserRole.USER,
   emailVerified: false,
@@ -123,13 +125,17 @@ describe('AuthService — Property 6: Unicidad de email en registro', () => {
             });
 
             // First registration must succeed
-            const firstResult = await service.register({ email, password });
+            const firstResult = await service.register({
+              fullName: 'Unique User',
+              email,
+              password,
+            });
             expect(firstResult.message).toBeDefined();
 
             // Second registration with the same email must throw ConflictException
             let thrownError: unknown;
             try {
-              await service.register({ email, password });
+              await service.register({ fullName: 'Unique User', email, password });
             } catch (err) {
               thrownError = err;
             }
