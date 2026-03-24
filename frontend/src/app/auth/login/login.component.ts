@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,10 @@ import { RouterLink } from '@angular/router';
 
         <!-- Form -->
         <div class="p-8">
+          <!-- Error alert -->
+          <div *ngIf="errorMessage" class="mb-4 text-red-600 bg-red-100 p-3 rounded text-sm">
+            {{ errorMessage }}
+          </div>
           <!-- Email -->
           <div class="form-group">
             <label for="email" class="label">Correo Electrónico</label>
@@ -56,9 +61,10 @@ import { RouterLink } from '@angular/router';
           <!-- Login Button -->
           <button
             (click)="login()"
-            class="btn-primary btn-lg w-full mb-4"
+            [disabled]="loading"
+            class="btn-primary btn-lg w-full mb-4 disabled:opacity-50"
           >
-            Iniciar Sesión
+            {{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}
           </button>
 
           <!-- Forgot Password -->
@@ -94,14 +100,31 @@ export class LoginComponent {
   email = '';
   password = '';
   rememberMe = false;
+  loading = false;
+  errorMessage = '';
+
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   login() {
+    this.errorMessage = '';
     if (!this.email || !this.password) {
-      alert('Por favor completa todos los campos');
+      this.errorMessage = 'Por favor completa todos los campos';
       return;
     }
-    console.log('Login:', { email: this.email, password: this.password, rememberMe: this.rememberMe });
-    // TODO: Implement auth service
+    
+    this.loading = true;
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (res) => {
+        this.loading = false;
+        // Navegar a inicio tras login exitoso
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = err.error?.message || 'Error al iniciar sesión';
+      }
+    });
   }
 }
 

@@ -39,10 +39,16 @@ export class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, BCRYPT_ROUNDS);
-    await this.usersService.create({ email: dto.email, passwordHash });
+    await this.usersService.create({
+      email: dto.email,
+      passwordHash,
+      fullName: dto.fullName,
+      phone: dto.phone,
+    });
 
-    // TODO: send confirmation email via MailModule (task 2.5)
-    return { message: 'Usuario registrado. Revisa tu email para confirmar la cuenta.' };
+    return {
+      message: 'Usuario registrado. Revisa tu email para confirmar la cuenta.',
+    };
   }
 
   async login(dto: LoginDto, res: Response): Promise<{ message: string }> {

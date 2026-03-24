@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+console.log('🚀 [BACKEND] Starting application bootstrap process...');
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
@@ -10,6 +11,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -33,3 +36,5 @@ async function bootstrap() {
   await app.listen(port, '0.0.0.0'); // 0.0.0.0 para que escuche en todas las interfaces
   console.log(`✅ Application is running on http://localhost:${port}`);
 }
+
+bootstrap();

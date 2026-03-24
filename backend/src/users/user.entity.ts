@@ -18,6 +18,12 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  fullName: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  phone: string;
+
   @Column()
   passwordHash: string;
 

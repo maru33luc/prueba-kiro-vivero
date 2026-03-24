@@ -24,7 +24,7 @@ import { PlantsModule } from './plants/plants.module';
         database: configService.get('DB_NAME', 'vivero_online'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-        synchronize: false,
+        synchronize: true,
         logging: configService.get('NODE_ENV') === 'development',
       }),
       inject: [ConfigService],

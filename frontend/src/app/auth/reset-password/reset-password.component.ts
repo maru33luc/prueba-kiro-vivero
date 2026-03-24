@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,6 +20,10 @@ import { RouterLink } from '@angular/router';
         <!-- Content -->
         <div class="p-8">
           <div *ngIf="!resetSent" class="space-y-4">
+            <div *ngIf="errorMessage" class="mb-4 text-red-600 bg-red-100 p-3 rounded text-sm text-center">
+              {{ errorMessage }}
+            </div>
+
             <p class="text-earth-700 mb-6">
               Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
             </p>
@@ -36,9 +41,10 @@ import { RouterLink } from '@angular/router';
 
             <button
               (click)="sendReset()"
-              class="btn-primary btn-lg w-full"
+              [disabled]="loading"
+              class="btn-primary btn-lg w-full disabled:opacity-50"
             >
-              Enviar Enlace de Recuperación
+              {{ loading ? 'Enviando...' : 'Enviar Enlace de Recuperación' }}
             </button>
 
             <a routerLink="/auth/login" class="block text-center text-plant-600 hover:text-plant-700">
@@ -58,14 +64,14 @@ import { RouterLink } from '@angular/router';
             </p>
 
             <button
-              (click)="resetSent = false; email = ''"
+              (click)="resetSent = false; email = ''; errorMessage = ''"
               class="btn-primary btn-lg w-full"
             >
               Intentar Con Otro Correo
             </button>
 
             <a routerLink="/auth/login">
-              <button class="btn-outline btn-lg w-full">
+              <button class="btn-outline btn-lg w-full mt-2">
                 Ir a Iniciar Sesión
               </button>
             </a>
@@ -78,15 +84,30 @@ import { RouterLink } from '@angular/router';
 export class ResetPasswordComponent {
   email = '';
   resetSent = false;
+  loading = false;
+  errorMessage = '';
+
+  private authService = inject(AuthService);
 
   sendReset() {
+    this.errorMessage = '';
     if (!this.email) {
-      alert('Por favor ingresa tu correo electrónico');
+      this.errorMessage = 'Por favor ingresa tu correo electrónico';
       return;
     }
 
-    console.log('Password reset requested for:', this.email);
-    this.resetSent = true;
+    this.loading = true;
+    this.authService.forgotPassword(this.email).subscribe({
+      next: (res) => {
+        this.loading = false;
+        this.resetSent = true;
+      },
+      error: (err) => {
+        this.loading = false;
+        const msg = err.error?.message;
+        this.errorMessage = Array.isArray(msg) ? msg.join(', ') : (msg || 'Ocurrió un error al procesar tu solicitud');
+      }
+    });
   }
 }
 

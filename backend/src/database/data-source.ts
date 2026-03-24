@@ -13,6 +13,6 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'vivero_online',
   entities: [path.join(__dirname, '../**/*.entity{.ts,.js}')],
   migrations: [path.join(__dirname, './migrations/*{.ts,.js}')],
-  synchronize: false,
+  synchronize: true,
   logging: process.env.NODE_ENV === 'development',
 });
